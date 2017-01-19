@@ -80,7 +80,13 @@ def blame_trail(origfn, ui, repo, *pats, **opts):
     lines = fctx.annotate(follow=follow, linenumber=linenumber,
                           diffopts=diffopts)
 
-    metadata, line_contents = lines[trail_line - 1]
+    try:
+        metadata, line_contents = lines[trail_line - 1]
+    except IndexError:
+        ui.warn("Could not retrieve contents of line %r, IndexError.\n" %
+                (trail_line - 1))
+        return 1
+
     original_rev = metadata[0].rev()
     original_line = metadata[1]
 
